@@ -6,6 +6,9 @@ This is a public Slicelytics repository containing Agent skills for, e.g., Claud
 
 Feel free to open new issues for any support requests, feedback, or feature requests.
 
+## What is Slicelytics?
+
+https://github.com/user-attachments/assets/2ed542c2-7da1-4a46-aa91-052bb5d4e1f1
 
 ## Installing the skills
 
