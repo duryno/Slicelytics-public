@@ -6,6 +6,10 @@ This is a public Slicelytics repository containing Agent skills for, e.g., Claud
 
 Feel free to open new issues for any support requests, feedback, or feature requests.
 
+## What is Slicelytics?
+
+https://github.com/user-attachments/assets/2ed542c2-7da1-4a46-aa91-052bb5d4e1f1
+
 ## What the skill does
 
 The `slicelytics` skill lets your coding agent (Claude Code, Codex, Cursor, …) open data in [Slicelytics](https://slicelytics.com?utm_source=github) with the view already set up. You don't need a throwaway plotting script or a spreadsheet import. Ask the agent to show you the data, and it hands Slicelytics the file along with a view that sets which fields to show, how to filter them and which chart to draw.
