@@ -1,0 +1,29 @@
+{
+  "name": "slicelytics",
+  "displayName": "Slicelytics",
+  "version": "1.0.0",
+  "description": "Open JSON, NDJSON/JSONL, CSV and TOON files in Slicelytics to explore, chart or compare them, with the view already set up. The data stays in your browser.",
+  "author": {
+    "name": "Slicelytics",
+    "email": "support@slicelytics.com",
+    "url": "https://slicelytics.com"
+  },
+  "homepage": "https://slicelytics.com/tools/ai-agents",
+  "repository": "https://github.com/duryno/Slicelytics-public",
+  "keywords": [
+    "data-visualization",
+    "charts",
+    "json",
+    "ndjson",
+    "jsonl",
+    "csv",
+    "toon",
+    "diff",
+    "benchmarks",
+    "experiments"
+  ],
+  "skills": "./.agents/skills/",
+  "icon": "./logo.png",
+  "documentationUrl": "https://slicelytics.com/tools/ai-agents",
+  "supportUrl": "https://github.com/duryno/Slicelytics-public/issues"
+}

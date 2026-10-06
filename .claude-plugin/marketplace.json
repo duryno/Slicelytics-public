@@ -1,0 +1,15 @@
+{
+  "name": "slicelytics",
+  "description": "The Slicelytics plugin for Claude Code",
+  "owner": {
+    "name": "Slicelytics",
+    "email": "support@slicelytics.com"
+  },
+  "plugins": [
+    {
+      "name": "slicelytics",
+      "source": "./",
+      "description": "Open JSON, NDJSON/JSONL, CSV and TOON files in Slicelytics to explore, chart or compare them."
+    }
+  ]
+}

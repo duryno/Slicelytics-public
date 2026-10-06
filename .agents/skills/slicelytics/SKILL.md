@@ -1,6 +1,6 @@
 ---
 name: slicelytics
-description: Open datasets in Slicelytics (slicelytics.com), a browser app for exploring, charting and comparing JSON, NDJSON/JSONL, CSV and TOON data. Use when the user asks to visualise, chart, plot, explore, inspect, diff or compare dataset files or a script's structured output - e.g. "visualise this CSV", "plot p95 latency over time", "compare these two runs". The data stays in the user's browser.
+description: Open datasets in Slicelytics (slicelytics.com), a browser app for exploring, charting and comparing JSON, NDJSON/JSONL, CSV and TOON data. Use when the user asks to visualise, chart, plot, explore, inspect, diff or compare dataset files or a script's structured output, such as benchmark or eval results, experiment runs, JSONL logs or API responses - e.g. "visualise this CSV", "plot p95 latency over time", "compare these two runs", "show only the errors in this log". The data stays in the user's browser.
 ---
 
 # Slicelytics
