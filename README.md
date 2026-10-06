@@ -2,7 +2,7 @@
 
 [Slicelytics.com](https://slicelytics.com?utm_source=github)
 
-This is a public Slicelytics repository for sharing of AI agent skills and engaging with the community through issues and more.
+This is a public Slicelytics repository containing Agent skills for, e.g., Claude Code, Codex & Cursor, useful to visualise, explore and compare JSON, NDJSON, CSV and TOON data in Slicelytics.
 
 Feel free to open new issues for any support requests, feedback, or feature requests.
 
