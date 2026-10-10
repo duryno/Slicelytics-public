@@ -92,9 +92,9 @@ These were measured on macOS with Chrome on 2026-09-22:
 2. Optionally, write its view next to it: same base name, `.view.json`. So `run-42.ndjson` gets `run-42.view.json`, holding a ViewSpec.
 3. Ask for it to be shown: write `slicelytics.show.json` into the folder, holding `{ "run": "run-42.ndjson" }`. Write it after the run and its view are complete.
 4. Open the app: `open -a Slicelytics` on macOS. This also brings an open app to the front.
-   - If the app is closed, it loads the requested run when it opens, and applies its view.
-   - If it's already open, it loads the run within a couple of seconds.
-   - Without a show request, a closed app opens on the newest run, if it's new since the app last saw the folder. Otherwise it reopens on what the user was last looking at.
+    - If the app is closed, it loads the requested run when it opens, and applies its view.
+    - If it's already open, it loads the run within a couple of seconds.
+    - Without a show request, a closed app opens on the newest run, if it's new since the app last saw the folder. Otherwise it reopens on what the user was last looking at.
 
 **To compare two runs**, write both into the folder, the one to show as "original" last, so it's the newest. Then add `"compare": "<file name of the other run>"` to the newest run's `.view.json`. `compare` implies `"view": "compare"`:
 
@@ -124,23 +124,23 @@ A ViewSpec is JSON describing the whole view. Anything left out is reset to its 
 }
 ```
 
-| Field     | Meaning                                                                                                                                                                |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `v`       | Always `1`.                                                                                                                                                            |
-| `view`    | `explore`, `compare` or `visualize`.                                                                                                                                   |
-| `props`   | Fields to show; everything else is hidden. Nested fields use dots (`a.b`). Omitted: all fields.                                                                        |
-| `filters` | `{ "field": "value" }`. Keeps only items whose field equals the value, compared as strings. Several filters are ANDed. A filtered field doesn't need to be in `props`. |
-| `x`       | Visualize: the field that labels the x-axis. Omitted: the item index.                                                                                                  |
-| `chart`   | Visualize: chart type for every shown field. One of `bar`, `line`, `pie`, `radar`, `bubble`, `doughnut`, `polarArea`, `scatter`.                                       |
-| `series`  | Visualize: per field, `{ "chart": <type>, "metric": <metric> }`. Overrides `chart`.                                                                                    |
+| Field     | Meaning                                                                                                                                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `v`       | Always `1`.                                                                                                                                                                                                  |
+| `view`    | `explore`, `compare` or `visualize`.                                                                                                                                                                         |
+| `props`   | Fields to show; everything else is hidden. Nested fields use dots (`a.b`). Indexes pick array elements: `mlModel.layers.weights[0]` shows only the first row of each layer's `weights`. Omitted: all fields. |
+| `filters` | `{ "field": "value" }`. Keeps only items whose field equals the value, compared as strings. Several filters are ANDed. A filtered field doesn't need to be in `props`.                                       |
+| `x`       | Visualize: the field that labels the x-axis. Omitted: the item index.                                                                                                                                        |
+| `chart`   | Visualize: chart type for every shown field. One of `bar`, `line`, `pie`, `radar`, `bubble`, `doughnut`, `polarArea`, `scatter`.                                                                             |
+| `series`  | Visualize: per field, `{ "chart": <type>, "metric": <metric> }`. Overrides `chart`.                                                                                                                          |
 
 **Metrics:**
 
 - `density` counts items per distinct value of any field, and always draws one bar per value.
-  - Example: `"props": ["endpoint"], "series": {"endpoint": {"metric": "density"}}` shows requests per endpoint.
-  - The field must be shown, so put it in `props` (or leave `props` out).
-  - Don't set `x` with it: `x` replaces the bars' labels.
-  - Keep other fields out of that chart.
+    - Example: `"props": ["endpoint"], "series": {"endpoint": {"metric": "density"}}` shows requests per endpoint.
+    - The field must be shown, so put it in `props` (or leave `props` out).
+    - Don't set `x` with it: `x` replaces the bars' labels.
+    - Keep other fields out of that chart.
 - For fields holding arrays of numbers: `sum`, `mean`, `median`, `mode`, `min`, `max`, `range`, `stdDev`, `variance`, `multiplication`.
 - For arrays of dates: `min`, `max`, `range`, `density`.
 - `size` gives the length of strings and arrays.
@@ -150,11 +150,14 @@ A ViewSpec is JSON describing the whole view. Anything left out is reset to its 
 
 - **Visualize without a view:** a `/data/visualize` link with no `?view=` opens with no fields selected. Give a view.
 - **Visualize:** plot one series per field in `props`, one point per item, in file order.
-  - If the rows aren't ordered by your `x` field, a line chart will zigzag. Tell the user, and offer to sort a copy.
-  - Put numeric fields in `props` and use a date or label field as `x`, not in `props`: date strings in `props` get plotted as timestamps.
+    - If the rows aren't ordered by your `x` field, a line chart will zigzag. Tell the user, and offer to sort a copy.
+    - Put numeric fields in `props` and use a date or label field as `x`, not in `props`: date strings in `props` get plotted as timestamps.
+- **Nested arrays:** a field holding arrays of arrays, e.g. a matrix of `weights` in each layer of a model (`mlModel.layers.weights`), plots one series per innermost array.
+    - To plot only some, put indexes in `props`: `mlModel.layers.weights[0]` plots the first row of each layer's `weights`, and `mlModel.layers[1].weights` only the second layer's.
+    - An indexed path shows the whole field, unless `props` also names fields inside it: `["mlModel.layers[1]", "mlModel.layers.bias"]` shows only the second layer's `bias`.
 - **Compare:** items are matched **by position**, not by key.
-  - If the two files list their items in different orders, every item after the first mismatch shows as changed. Tell the user, and offer to sort copies of both by a key they choose. Numeric keys need a numeric sort, so `u10` comes after `u2`. With sorted copies, pass `--name` and `--compare-name` so the originals' names are shown.
-  - The page shows the two datasets side by side, with changed items highlighted, plus a diff pane listing only the changes by item position (e.g. item `2`, `score: 999`).
-  - A view doesn't apply on `/data/compare`, so skip `--view` there. In the watched folder, a `.view.json` with `compare` is how you get two runs side by side.
+    - If the two files list their items in different orders, every item after the first mismatch shows as changed. Tell the user, and offer to sort copies of both by a key they choose. Numeric keys need a numeric sort, so `u10` comes after `u2`. With sorted copies, pass `--name` and `--compare-name` so the originals' names are shown.
+    - The page shows the two datasets side by side, with changed items highlighted, plus a diff pane listing only the changes by item position (e.g. item `2`, `score: 999`).
+    - A view doesn't apply on `/data/compare`, so skip `--view` there. In the watched folder, a `.view.json` with `compare` is how you get two runs side by side.
 - **Two versions of one file** (e.g. a snapshot, mock or fixture changed in a pull request, often too large for GitHub to render): write each version to a temporary file with `git show <ref>:<path> > <tmp file>`, unchanged, and compare them with the older one first. That's the left side. For a pull request, the older version is at the merge base (`git merge-base origin/main HEAD`, with the PR's base branch), which is what GitHub diffs against. Pass `--name` and `--compare-name` that say which version is which, e.g. `users.json (main)` and `users.json (this PR)`.
 - **Errors:** anything invalid (an unknown field, a bad chart type) is skipped, and the user is told in a message. The rest still applies.
