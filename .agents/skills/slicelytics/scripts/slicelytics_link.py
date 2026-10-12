@@ -26,6 +26,7 @@ FORMATS = {
     '.ndjson': 'ndjson',
     '.jsonl': 'ndjson',
     '.csv': 'csv',
+    '.tsv': 'tsv',
     '.toon': 'toon',
 }
 ROUTES = ('explore', 'compare', 'visualize')
@@ -114,7 +115,7 @@ def open_link(url, base, in_app):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('data', help='dataset file: .json, .ndjson/.jsonl, .csv or .toon, optionally .gz')
+    parser.add_argument('data', help='dataset file: .json, .ndjson/.jsonl, .csv, .tsv or .toon, optionally .gz')
     parser.add_argument('--compare', help='a second dataset file, to compare with the first')
     parser.add_argument('--name', help='name shown for the dataset (default: file name)')
     parser.add_argument('--compare-name', help='name shown for the compared dataset (default: file name)')

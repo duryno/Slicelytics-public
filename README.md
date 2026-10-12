@@ -2,7 +2,7 @@
 
 [Slicelytics.com](https://slicelytics.com?utm_source=github)
 
-This is a public Slicelytics repository containing Agent skills for, e.g., Claude Code, Codex & Cursor, useful to visualise, explore and compare JSON, NDJSON, CSV and TOON data in Slicelytics.
+This is a public Slicelytics repository containing Agent skills for, e.g., Claude Code, Codex & Cursor, useful to visualise, explore and compare JSON, NDJSON, CSV, TSV and TOON data in Slicelytics.
 
 Feel free to open new issues for any support requests, feedback, or feature requests.
 
@@ -20,7 +20,7 @@ Slicelytics has three views:
 - **Visualize**: chart one or more fields as bar, line, pie, scatter and other chart types. It can also count values per category or summarise arrays (mean, median, max, …).
 - **Compare**: put two datasets side by side, with changed items highlighted and a list of exactly what changed.
 
-It works with JSON, NDJSON/JSONL, CSV and TOON files, including gzipped & Zstandard-compressed ones.
+It works with JSON, NDJSON/JSONL, CSV, TSV and TOON files, including gzipped & Zstandard-compressed ones.
 
 ### When to use it
 

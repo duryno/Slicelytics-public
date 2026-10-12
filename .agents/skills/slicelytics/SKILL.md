@@ -1,6 +1,6 @@
 ---
 name: slicelytics
-description: Open datasets in Slicelytics (slicelytics.com), a browser app for exploring, charting and comparing JSON, NDJSON/JSONL, CSV and TOON data. Use when the user asks to visualise, chart, plot, explore, inspect, diff or compare dataset files or a script's structured output, such as benchmark or eval results, experiment runs, JSONL logs or API responses - e.g. "visualise this CSV", "plot p95 latency over time", "compare these two runs", "show only the errors in this log". The data stays in the user's browser.
+description: Open datasets in Slicelytics (slicelytics.com), a browser app for exploring, charting and comparing JSON, NDJSON/JSONL, CSV, TSV and TOON data. Use when the user asks to visualise, chart, plot, explore, inspect, diff or compare dataset files or a script's structured output, such as benchmark or eval results, experiment runs, JSONL logs or API responses - e.g. "visualise this CSV", "plot p95 latency over time", "compare these two runs", "show only the errors in this log". The data stays in the user's browser.
 ---
 
 # Slicelytics
@@ -54,7 +54,7 @@ https://slicelytics.com/data/<explore|compare|visualize>?view=<URL-encoded ViewS
 ```
 
 - `data`: the file's text, gzipped, then base64url-encoded (`-` and `_`, no `=` padding).
-- `format`: `json` (the default), `ndjson`, `csv` or `toon`.
+- `format`: `json` (the default), `ndjson`, `csv`, `tsv` or `toon`.
 - `name` is optional.
 - For Compare, add `&compare=<D2>&compareFormat=<F2>&compareName=<N2>` and use `/data/compare`.
 - Every value after `#` is URL-encoded, like a query string.
@@ -88,7 +88,7 @@ These were measured on macOS with Chrome on 2026-09-22:
 
 **Each time:**
 
-1. Write the dataset into the folder under a new name, e.g. `run-42.ndjson`. Supported: `.json`, `.ndjson`, `.jsonl`, `.csv` or `.toon`, optionally `.gz` or `.zst`. The newest file by modification time counts as the latest run.
+1. Write the dataset into the folder under a new name, e.g. `run-42.ndjson`. Supported: `.json`, `.ndjson`, `.jsonl`, `.csv`, `.tsv` or `.toon`, optionally `.gz` or `.zst`. The newest file by modification time counts as the latest run.
 2. Optionally, write its view next to it: same base name, `.view.json`. So `run-42.ndjson` gets `run-42.view.json`, holding a ViewSpec.
 3. Ask for it to be shown: write `slicelytics.show.json` into the folder, holding `{ "run": "run-42.ndjson" }`. Write it after the run and its view are complete.
 4. Open the app: `open -a Slicelytics` on macOS. This also brings an open app to the front.
@@ -124,15 +124,15 @@ A ViewSpec is JSON describing the whole view. Anything left out is reset to its 
 }
 ```
 
-| Field     | Meaning                                                                                                                                                                                                      |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `v`       | Always `1`.                                                                                                                                                                                                  |
-| `view`    | `explore`, `compare` or `visualize`.                                                                                                                                                                         |
-| `props`   | Fields to show; everything else is hidden. Nested fields use dots (`a.b`). Indexes pick array elements: `mlModel.layers.weights[0]` shows only the first row of each layer's `weights`. Omitted: all fields. |
-| `filters` | `{ "field": "value" }`. Keeps only items whose field equals the value, compared as strings. Several filters are ANDed. A filtered field doesn't need to be in `props`.                                       |
-| `x`       | Visualize: the field that labels the x-axis. Omitted: the item index.                                                                                                                                        |
-| `chart`   | Visualize: chart type for every shown field. One of `bar`, `line`, `pie`, `radar`, `bubble`, `doughnut`, `polarArea`, `scatter`.                                                                             |
-| `series`  | Visualize: per field, `{ "chart": <type>, "metric": <metric> }`. Overrides `chart`.                                                                                                                          |
+| Field     | Meaning                                                                                                                                                                                                                                                                            |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `v`       | Always `1`.                                                                                                                                                                                                                                                                        |
+| `view`    | `explore`, `compare` or `visualize`.                                                                                                                                                                                                                                               |
+| `props`   | Fields to show; everything else is hidden. Nested fields use dots (`a.b`). Indexes pick array elements: `mlModel.layers.weights[0]` shows only the first row of each layer's `weights`. Omitted: all fields.                                                                       |
+| `filters` | `{ "field": "value" }`. Keeps only items whose field equals the value, compared as strings. `{ "field": { "not": ["a", "b"] } }` keeps items whose field is neither, including items without the field. Several filters are ANDed. A filtered field doesn't need to be in `props`. |
+| `x`       | Visualize: the field that labels the x-axis. Omitted: the item index.                                                                                                                                                                                                              |
+| `chart`   | Visualize: chart type for every shown field. One of `bar`, `line`, `pie`, `radar`, `bubble`, `doughnut`, `polarArea`, `scatter`.                                                                                                                                                   |
+| `series`  | Visualize: per field, `{ "chart": <type>, "metric": <metric> }`. Overrides `chart`.                                                                                                                                                                                                |
 
 **Metrics:**
 
