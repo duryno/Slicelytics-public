@@ -30,7 +30,7 @@ Only do what the user asked for:
 
 If the user clicks your link in a browser (e.g. in a web chat) and has the Slicelytics app installed, it opens in the app. If the app is already open, the link doesn't replace their view: the app shows "A link was opened in Slicelytics" with a **Show** button. Tell the user to click it.
 
-Use `scripts/slicelytics_link.py` in this skill's directory, called by its absolute path (Python 3, standard library only). It infers the format from the extension, gzips and encodes the data, and picks the page. It prints the link on stdout and its length on stderr. Flags:
+Use `scripts/slicelytics_link.py` in this skill's directory, called by its absolute path (Python 3, standard library only). It infers the format from the extension, compresses the data, and picks the page. Its links are typically 1.3–2× shorter than a hand-built one: it stores the data column by column when that's shorter, and compresses with Zstandard where Python has it (3.14+, or the `backports.zstd` package), else gzip. The values arrive unchanged. It prints the link on stdout and its length on stderr. Flags:
 
 - `--compare FILE`: a second dataset.
 - `--name` and `--compare-name`: the names shown.
@@ -53,8 +53,8 @@ To build a link without the script:
 https://slicelytics.com/data/<explore|compare|visualize>?view=<URL-encoded ViewSpec JSON>#v=1&data=<D>&format=<F>&name=<N>
 ```
 
-- `data`: the file's text, gzipped, then base64url-encoded (`-` and `_`, no `=` padding).
-- `format`: `json` (the default), `ndjson`, `csv`, `tsv` or `toon`.
+- `data`: the file's text, gzipped or Zstandard-compressed, then base64url-encoded (`-` and `_`, no `=` padding).
+- `format`: `json` (the default), `ndjson`, `csv`, `tsv` or `toon`. The script may also send `columns`, its compact layout; don't write that by hand.
 - `name` is optional.
 - For Compare, add `&compare=<D2>&compareFormat=<F2>&compareName=<N2>` and use `/data/compare`.
 - Every value after `#` is URL-encoded, like a query string.
@@ -67,7 +67,7 @@ These were measured on macOS with Chrome on 2026-09-22:
 - **Printed links:** keep them to 8,000 characters. Every character is output you generate and text the user has to copy. Above that, open the link or use the folder.
 - **Opened links** (`open <url>`, `xdg-open`, `--app`): the OS limits one argument to 1 MiB. A 964 KB link arrived intact; a 1.29 MB one failed with "argument list too long". Keep to **900,000 characters**, and use the watched folder above that.
 - **Chrome** caps URLs at 2 MB anyway.
-- **Compression:** gzip makes typical JSON or CSV 5–10× smaller, and base64 adds a third back. Random numeric data only compresses about 2×. Don't guess: the script prints the length.
+- **Compression:** gzip makes typical JSON or CSV 5–10× smaller, and base64 adds a third back. The script's links are typically 1.3–2× shorter again. Random numeric data only compresses about 2×. Don't guess: the script prints the length, and whether it used `zstd` or `gzip`.
 
 ### Opening in the installed app (macOS, local)
 
