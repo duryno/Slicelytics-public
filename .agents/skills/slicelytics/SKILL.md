@@ -1,6 +1,6 @@
 ---
 name: slicelytics
-description: Open datasets in Slicelytics (slicelytics.com), a browser app for exploring, charting and comparing JSON, NDJSON/JSONL, CSV, TSV and TOON data. Use when the user asks to visualise, chart, plot, explore, inspect, diff or compare dataset files or a script's structured output, such as benchmark or eval results, experiment runs, JSONL logs or API responses - e.g. "visualise this CSV", "plot p95 latency over time", "compare these two runs", "show only the errors in this log". The data stays in the user's browser.
+description: Open datasets in Slicelytics (slicelytics.com), a browser app for exploring, charting and comparing JSON, NDJSON/JSONL, CSV, TSV and TOON data, and FIT files from fitness devices. Use when the user asks to visualise, chart, plot, explore, inspect, diff or compare dataset files or a script's structured output, such as benchmark or eval results, experiment runs, JSONL logs, API responses or FIT activities - e.g. "visualise this CSV", "plot p95 latency over time", "compare these two runs", "show only the errors in this log". The data stays in the user's browser.
 ---
 
 # Slicelytics
@@ -25,6 +25,7 @@ Only do what the user asked for:
 | You can only reply with text (web chat, sandbox, sharing with someone else)                 | **Link**, printed. Only when it is ≤ 8,000 characters |
 | You can run commands on the user's computer                                                 | **Link**, opened (≤ 900,000 characters)               |
 | Bigger data, repeated runs (e.g. an experiment loop), or a watched folder is already set up | **Watched folder**                                    |
+| A FIT file (`.fit`): it's binary, so it can't go in a link                                  | **Watched folder**                                    |
 
 ## Link route
 
@@ -88,7 +89,7 @@ These were measured on macOS with Chrome on 2026-09-22:
 
 **Each time:**
 
-1. Write the dataset into the folder under a new name, e.g. `run-42.ndjson`. Supported: `.json`, `.ndjson`, `.jsonl`, `.csv`, `.tsv` or `.toon`, optionally `.gz` or `.zst`. The newest file by modification time counts as the latest run.
+1. Write the dataset into the folder under a new name, e.g. `run-42.ndjson`. Supported: `.json`, `.ndjson`, `.jsonl`, `.csv`, `.tsv`, `.toon` or `.fit`, optionally `.gz` or `.zst`. The newest file by modification time counts as the latest run.
 2. Optionally, write its view next to it: same base name, `.view.json`. So `run-42.ndjson` gets `run-42.view.json`, holding a ViewSpec.
 3. Ask for it to be shown: write `slicelytics.show.json` into the folder, holding `{ "run": "run-42.ndjson" }`. Write it after the run and its view are complete.
 4. Open the app: `open -a Slicelytics` on macOS. This also brings an open app to the front.
@@ -155,6 +156,7 @@ A ViewSpec is JSON describing the whole view. Anything left out is reset to its 
 - **Nested arrays:** a field holding arrays of arrays, e.g. a matrix of `weights` in each layer of a model (`mlModel.layers.weights`), plots one series per innermost array.
     - To plot only some, put indexes in `props`: `mlModel.layers.weights[0]` plots the first row of each layer's `weights`, and `mlModel.layers[1].weights` only the second layer's.
     - An indexed path shows the whole field, unless `props` also names fields inside it: `["mlModel.layers[1]", "mlModel.layers.bias"]` shows only the second layer's `bias`.
+- **FIT files** open as one document with a list per FIT message type, under FIT's names: `record` (the samples taken during the activity), `lap`, `session`, `event`, `device_info`, …. Fields are named as in the FIT profile, e.g. `heart_rate`, `enhanced_speed`, with positions in degrees and times as ISO strings. Address a field through its list: `"props": ["record.heart_rate"], "x": "record.timestamp", "chart": "line"` charts heart rate over the activity. Common `record` fields are `timestamp`, `heart_rate`, `enhanced_speed`, `distance`, `cadence`, `power`, `enhanced_altitude`, `position_lat` and `position_long`; which ones a file has depends on the device. A field the file lacks is skipped and the user is told. Don't convert the file to read or open it.
 - **Compare:** items are matched **by position**, not by key.
     - If the two files list their items in different orders, every item after the first mismatch shows as changed. Tell the user, and offer to sort copies of both by a key they choose. Numeric keys need a numeric sort, so `u10` comes after `u2`. With sorted copies, pass `--name` and `--compare-name` so the originals' names are shown.
     - The page shows the two datasets side by side, with changed items highlighted, plus a diff pane listing only the changes by item position (e.g. item `2`, `score: 999`).

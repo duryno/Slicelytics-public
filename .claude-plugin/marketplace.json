@@ -9,7 +9,7 @@
     {
       "name": "slicelytics",
       "source": "./",
-      "description": "Open JSON, NDJSON/JSONL, CSV, TSV and TOON files in Slicelytics to explore, chart or compare them."
+      "description": "Open JSON, NDJSON/JSONL, CSV, TSV, TOON and FIT files in Slicelytics to explore, chart or compare them."
     }
   ]
 }

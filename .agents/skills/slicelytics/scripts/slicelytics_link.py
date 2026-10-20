@@ -56,6 +56,8 @@ def read_dataset(path):
     name = os.path.basename(path)
     stem = name[:-3] if name.endswith('.gz') else name
     ext = os.path.splitext(stem)[1].lower()
+    if ext == '.fit':
+        sys.exit(f'{path}: FIT files are binary and can\'t go in a link - write the file into the watched folder instead')
     if ext not in FORMATS:
         sys.exit(f'{path}: unsupported format "{ext}" - use one of {", ".join(FORMATS)}')
 

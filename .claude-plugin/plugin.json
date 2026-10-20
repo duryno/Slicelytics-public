@@ -1,8 +1,8 @@
 {
   "name": "slicelytics",
   "displayName": "Slicelytics",
-  "version": "1.0.4",
-  "description": "Open JSON, NDJSON/JSONL, CSV, TSV and TOON files in Slicelytics to explore, chart or compare them, with the view already set up. The data stays in your browser.",
+  "version": "1.0.5",
+  "description": "Open JSON, NDJSON/JSONL, CSV, TSV, TOON and FIT files in Slicelytics to explore, chart or compare them, with the view already set up. The data stays in your browser.",
   "author": {
     "name": "Slicelytics",
     "email": "support@slicelytics.com",
@@ -19,6 +19,7 @@
     "csv",
     "tsv",
     "toon",
+    "fit",
     "diff",
     "benchmarks",
     "experiments"

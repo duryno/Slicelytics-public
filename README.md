@@ -2,7 +2,7 @@
 
 [Slicelytics.com](https://slicelytics.com?utm_source=github)
 
-This is a public Slicelytics repository containing Agent skills for, e.g., Claude Code, Codex & Cursor, useful to visualise, explore and compare JSON, NDJSON, CSV, TSV and TOON data in Slicelytics.
+This is a public Slicelytics repository containing Agent skills for, e.g., Claude Code, Codex & Cursor, useful to visualise, explore and compare JSON, NDJSON, CSV, TSV and TOON data, and FIT files from fitness devices, in Slicelytics.
 
 Feel free to open new issues for any support requests, feedback, or feature requests.
 
@@ -20,7 +20,7 @@ Slicelytics has three views:
 - **Visualize**: chart one or more fields as bar, line, pie, scatter and other chart types. It can also count values per category or summarise arrays (mean, median, max, …).
 - **Compare**: put two datasets side by side, with changed items highlighted and a list of exactly what changed.
 
-It works with JSON, NDJSON/JSONL, CSV, TSV and TOON files, including gzipped & Zstandard-compressed ones.
+It works with JSON, NDJSON/JSONL, CSV, TSV and TOON files, and FIT files from Garmin, Polar, Suunto and other devices, including gzipped & Zstandard-compressed ones. FIT files are binary, so they open through the watched folder rather than a link.
 
 ### When to use it
 
@@ -33,6 +33,7 @@ It fits best when your agent produces or reads structured data that you want to 
 - **Logs:** "show only the errors in this JSONL log"
 - **API responses and other ad-hoc output:** "open this response in Slicelytics"
 - **Data files:** "visualise results.csv"
+- **Activities:** "chart heart rate over time in morning-run.fit"
 
 Since the agent can't see what Slicelytics renders, it tells you what it opened and how the view is set up (e.g. "Visualize: `p95_ms` as a line over `day`, filtered to `/api/search`"), so you can check it's what you asked for.
 
