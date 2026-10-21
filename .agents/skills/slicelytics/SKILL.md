@@ -25,7 +25,6 @@ Only do what the user asked for:
 | You can only reply with text (web chat, sandbox, sharing with someone else)                 | **Link**, printed. Only when it is ≤ 8,000 characters |
 | You can run commands on the user's computer                                                 | **Link**, opened (≤ 900,000 characters)               |
 | Bigger data, repeated runs (e.g. an experiment loop), or a watched folder is already set up | **Watched folder**                                    |
-| A FIT file (`.fit`): it's binary, so it can't go in a link                                  | **Watched folder**                                    |
 
 ## Link route
 
@@ -54,8 +53,8 @@ To build a link without the script:
 https://slicelytics.com/data/<explore|compare|visualize>?view=<URL-encoded ViewSpec JSON>#v=1&data=<D>&format=<F>&name=<N>
 ```
 
-- `data`: the file's text, gzipped or Zstandard-compressed, then base64url-encoded (`-` and `_`, no `=` padding).
-- `format`: `json` (the default), `ndjson`, `csv`, `tsv` or `toon`. The script may also send `columns`, its compact layout; don't write that by hand.
+- `data`: the file's text (a FIT file's bytes, as they are), gzipped or Zstandard-compressed, then base64url-encoded (`-` and `_`, no `=` padding).
+- `format`: `json` (the default), `ndjson`, `csv`, `tsv`, `toon` or `fit`. The script may also send `columns`, its compact layout; don't write that by hand.
 - `name` is optional.
 - For Compare, add `&compare=<D2>&compareFormat=<F2>&compareName=<N2>` and use `/data/compare`.
 - Every value after `#` is URL-encoded, like a query string.
@@ -129,7 +128,8 @@ A ViewSpec is JSON describing the whole view. Anything left out is reset to its 
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `v`       | Always `1`.                                                                                                                                                                                                                                                                        |
 | `view`    | `explore`, `compare` or `visualize`.                                                                                                                                                                                                                                               |
-| `props`   | Fields to show; everything else is hidden. Nested fields use dots (`a.b`). Indexes pick array elements: `mlModel.layers.weights[0]` shows only the first row of each layer's `weights`. Omitted: all fields.                                                                       |
+| `items`   | Items to show, by 0-based position in the file: indexes and ranges, e.g. `"0-99,205"`. Omitted: all items.                                                                                                                                                                         |
+| `props`   | Fields to show; everything else is hidden. Nested fields use dots (`a.b`). Indexes pick array elements: `mlModel.layers.weights[0]` shows only the first row of each layer's `weights`, and `[0-2,5]` the first three and the sixth. Omitted: all fields.                          |
 | `filters` | `{ "field": "value" }`. Keeps only items whose field equals the value, compared as strings. `{ "field": { "not": ["a", "b"] } }` keeps items whose field is neither, including items without the field. Several filters are ANDed. A filtered field doesn't need to be in `props`. |
 | `x`       | Visualize: the field that labels the x-axis. Omitted: the item index.                                                                                                                                                                                                              |
 | `chart`   | Visualize: chart type for every shown field. One of `bar`, `line`, `pie`, `radar`, `bubble`, `doughnut`, `polarArea`, `scatter`.                                                                                                                                                   |

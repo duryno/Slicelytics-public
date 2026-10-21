@@ -20,7 +20,7 @@ Slicelytics has three views:
 - **Visualize**: chart one or more fields as bar, line, pie, scatter and other chart types. It can also count values per category or summarise arrays (mean, median, max, …).
 - **Compare**: put two datasets side by side, with changed items highlighted and a list of exactly what changed.
 
-It works with JSON, NDJSON/JSONL, CSV, TSV and TOON files, and FIT files from Garmin, Polar, Suunto and other devices, including gzipped & Zstandard-compressed ones. FIT files are binary, so they open through the watched folder rather than a link.
+It works with JSON, NDJSON/JSONL, CSV, TSV and TOON files, and FIT files from Garmin, Polar, Suunto and other devices, including gzipped & Zstandard-compressed ones.
 
 ### When to use it
 

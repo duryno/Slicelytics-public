@@ -41,6 +41,7 @@ FORMATS = {
     '.csv': 'csv',
     '.tsv': 'tsv',
     '.toon': 'toon',
+    '.fit': 'fit',
 }
 ROUTES = ('explore', 'compare', 'visualize')
 
@@ -52,22 +53,27 @@ MAX_PRINT_CHARS = 8_000
 
 
 def read_dataset(path):
-    """Returns (text, format, name) for a data file, decompressing .gz."""
+    """Returns (content, format, name) for a data file, decompressing .gz. The content is text, or
+    bytes for a FIT file."""
     name = os.path.basename(path)
     stem = name[:-3] if name.endswith('.gz') else name
     ext = os.path.splitext(stem)[1].lower()
-    if ext == '.fit':
-        sys.exit(f'{path}: FIT files are binary and can\'t go in a link - write the file into the watched folder instead')
     if ext not in FORMATS:
         sys.exit(f'{path}: unsupported format "{ext}" - use one of {", ".join(FORMATS)}')
 
     opener = gzip.open if name.endswith('.gz') else open
+    if FORMATS[ext] == 'fit':
+        with opener(path, 'rb') as f:
+            return f.read(), 'fit', stem
     with opener(path, 'rt', encoding='utf-8') as f:
         return f.read(), FORMATS[ext], stem
 
 
 def encode(text, fmt):
-    """Returns (data, format) for a link: the text as it is, or column by column, whichever is shorter."""
+    """Returns (data, format) for a link: the text as it is, or column by column, whichever is shorter.
+    A FIT file's bytes go as they are."""
+    if fmt == 'fit':
+        return compress(text), fmt
     candidates = [(text, fmt)]
     columns = to_columns(text, fmt)
     if columns:
@@ -75,8 +81,8 @@ def encode(text, fmt):
     return min(((compress(t), f) for t, f in candidates), key=lambda c: len(c[0]))
 
 
-def compress(text):
-    data = text.encode('utf-8')
+def compress(content):
+    data = content if isinstance(content, bytes) else content.encode('utf-8')
     data = zstd.compress(data, level=19) if zstd else gzip.compress(data)
     return base64.urlsafe_b64encode(data).decode().rstrip('=')
 
@@ -312,7 +318,7 @@ def open_link(url, base, in_app):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('data', help='dataset file: .json, .ndjson/.jsonl, .csv, .tsv or .toon, optionally .gz')
+    parser.add_argument('data', help='dataset file: .json, .ndjson/.jsonl, .csv, .tsv, .toon or .fit, optionally .gz')
     parser.add_argument('--compare', help='a second dataset file, to compare with the first')
     parser.add_argument('--name', help='name shown for the dataset (default: file name)')
     parser.add_argument('--compare-name', help='name shown for the compared dataset (default: file name)')
