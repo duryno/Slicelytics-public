@@ -25,6 +25,7 @@ Only do what the user asked for:
 | You can only reply with text (web chat, sandbox, sharing with someone else)                 | **Link**, printed. Only when it is ≤ 8,000 characters |
 | You can run commands on the user's computer                                                 | **Link**, opened (≤ 900,000 characters)               |
 | Bigger data, repeated runs (e.g. an experiment loop), or a watched folder is already set up | **Watched folder**                                    |
+| The file is already online at an https URL the user gave (e.g. on GitHub)                   | **Link to the file** (see below), any size            |
 
 ## Link route
 
@@ -59,6 +60,15 @@ https://slicelytics.com/data/<explore|compare|visualize>?view=<URL-encoded ViewS
 - For Compare, add `&compare=<D2>&compareFormat=<F2>&compareName=<N2>` and use `/data/compare`.
 - Every value after `#` is URL-encoded, like a query string.
 - `?view=` is optional.
+
+### Linking to a file online
+
+If the file is already at an https URL, e.g. one the user pasted, pass the URL to the script in place of a file path (`--compare` takes one too). The link then points to the file instead of carrying it, so it stays short whatever the file's size, and you don't download it. By hand: `src=<URL>` replaces `data`, with no `format`, and `compareSrc=<URL>` replaces `compare`.
+
+- The browser that opens the link fetches the file from its host. Its content and extension decide the format; `name` defaults to the file's name.
+- https only, up to 500 MB. The host must allow cross-origin reads (CORS): raw.githubusercontent.com, gist.githubusercontent.com, cdn.jsdelivr.net, Hugging Face `/resolve/` URLs, Zenodo and Socrata do; GitHub release assets don't. A github.com or Hugging Face `/blob/` page URL is read as its raw file.
+- If the host blocks the request, the user is offered a download of the file to drop into the page. Tell them that's what to do if it happens.
+- Only use a URL the user gave you or that you know hosts the file. Don't upload their data anywhere to get one.
 
 ### Size limits
 

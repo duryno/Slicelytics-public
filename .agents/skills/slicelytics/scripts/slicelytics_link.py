@@ -9,6 +9,7 @@ Examples:
   slicelytics_link.py results.csv --view '{"v":1,"view":"visualize","props":["p95_ms"],"x":"day","chart":"line"}'
   slicelytics_link.py run-41.ndjson --compare run-42.ndjson --open
   slicelytics_link.py data.json --open --app          # macOS: in the installed Slicelytics app
+  slicelytics_link.py https://raw.githubusercontent.com/owner/repo/main/runs.csv   # links to the file
 """
 
 import argparse
@@ -258,6 +259,23 @@ def quote_field(field, delimiter):
     return '"' + field.replace('"', '""') + '"' if delimiter in field or re.search(r'["\r\n]', field) else field
 
 
+def is_url(arg):
+    return re.match(r'https?://', arg) is not None
+
+
+def dataset_params(arg, name, keys):
+    """The link's params for one dataset: a file's data, or a URL the browser fetches the file from
+    (`src`), which keeps the link short whatever the file's size. `keys` names data, src, format, name."""
+    data_key, src_key, format_key, name_key = keys
+    if is_url(arg):
+        if not arg.startswith('https://'):
+            sys.exit(f'{arg}: a file to link to must be on https')
+        return {src_key: arg, **({name_key: name} if name else {})}
+    text, fmt, file_name = read_dataset(arg)
+    data, fmt = encode(text, fmt)
+    return {data_key: data, format_key: fmt, name_key: name or file_name}
+
+
 def parse_view(view):
     """The view as JSON text: given inline, or as a path to a .json file."""
     if view is None:
@@ -318,8 +336,12 @@ def open_link(url, base, in_app):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('data', help='dataset file: .json, .ndjson/.jsonl, .csv, .tsv, .toon or .fit, optionally .gz')
-    parser.add_argument('--compare', help='a second dataset file, to compare with the first')
+    parser.add_argument(
+        'data',
+        help='dataset file: .json, .ndjson/.jsonl, .csv, .tsv, .toon or .fit, optionally .gz; '
+        'or the https URL of one, which the link points to instead of carrying',
+    )
+    parser.add_argument('--compare', help='a second dataset file or URL, to compare with the first')
     parser.add_argument('--name', help='name shown for the dataset (default: file name)')
     parser.add_argument('--compare-name', help='name shown for the compared dataset (default: file name)')
     parser.add_argument('--view', help='ViewSpec JSON, inline or a path to a .json file')
@@ -328,13 +350,10 @@ def main():
     parser.add_argument('--app', action='store_true', help='with --open, on macOS: open in the installed app')
     args = parser.parse_args()
 
-    text, fmt, name = read_dataset(args.data)
-    data, fmt = encode(text, fmt)
-    params = {'v': 1, 'data': data, 'format': fmt, 'name': args.name or name}
+    params = {'v': 1, **dataset_params(args.data, args.name, ('data', 'src', 'format', 'name'))}
     if args.compare:
-        text2, fmt2, name2 = read_dataset(args.compare)
-        data2, fmt2 = encode(text2, fmt2)
-        params.update(compare=data2, compareFormat=fmt2, compareName=args.compare_name or name2)
+        keys = ('compare', 'compareSrc', 'compareFormat', 'compareName')
+        params.update(dataset_params(args.compare, args.compare_name, keys))
 
     spec = parse_view(args.view)
     route = (spec or {}).get('view') or ('compare' if args.compare else 'explore')

@@ -1,7 +1,7 @@
 {
   "name": "slicelytics",
   "displayName": "Slicelytics",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Open JSON, NDJSON/JSONL, CSV, TSV, TOON and FIT files in Slicelytics to explore, chart or compare them, with the view already set up. The data stays in your browser.",
   "author": {
     "name": "Slicelytics",
@@ -10,6 +10,7 @@
   },
   "homepage": "https://slicelytics.com/tools/ai-agents",
   "repository": "https://github.com/duryno/Slicelytics-public",
+  "license": "MIT",
   "keywords": [
     "data-visualization",
     "charts",
@@ -27,5 +28,6 @@
   "skills": "./.agents/skills/",
   "icon": "./logo.png",
   "documentationUrl": "https://slicelytics.com/tools/ai-agents",
-  "supportUrl": "https://github.com/duryno/Slicelytics-public/issues"
+  "supportUrl": "https://github.com/duryno/Slicelytics-public/issues",
+  "privacyPolicyUrl": "https://slicelytics.com/privacy"
 }
